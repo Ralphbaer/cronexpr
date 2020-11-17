@@ -264,11 +264,10 @@ func TestNextN_every5min(t *testing.T) {
 		"Mon, 2 Sep 2013 08:45:00",
 		"Mon, 2 Sep 2013 08:50:00",
 		"Mon, 2 Sep 2013 08:55:00",
-		"Mon, 2 Sep 2013 09:00:00",
-		"Mon, 2 Sep 2013 09:05:00",
 	}
 	from, _ := time.Parse("2006-01-02 15:04:05", "2013-09-02 08:44:32")
-	result := MustParse("*/5 * * * *").NextN(from, uint(len(expected)))
+	to, _ := time.Parse("2006-01-02 15:04:05", "2013-09-04 08:44:32")
+	result := MustParse("*/5 * * * *").RangeN(from, to, uint(len(expected)))
 	if len(result) != len(expected) {
 		t.Errorf(`MustParse("*/5 * * * *").NextN("2013-09-02 08:44:30", 5):\n"`)
 		t.Errorf(`  Expected %d returned time values but got %d instead`, len(expected), len(result))
@@ -277,6 +276,30 @@ func TestNextN_every5min(t *testing.T) {
 		nextStr := next.Format("Mon, 2 Jan 2006 15:04:05")
 		if nextStr != expected[i] {
 			t.Errorf(`MustParse("*/5 * * * *").NextN("2013-09-02 08:44:30", 5):\n"`)
+			t.Errorf(`  result[%d]: expected "%s" but got "%s"`, i, expected[i], nextStr)
+		}
+	}
+}
+
+
+func TestRangeN(t *testing.T) {
+	expected := []string{
+		"Sat, 30 Nov 2013 00:00:00",
+		"Sat, 29 Mar 2014 00:00:00",
+		"Sat, 31 May 2014 00:00:00",
+		"Sat, 30 Aug 2014 00:00:00",
+		"Sat, 29 Nov 2014 00:00:00",
+	}
+	from, _ := time.Parse("2006-01-02 15:04:05", "2013-09-02 08:44:30")
+	result := MustParse("0 0 * * 6#5").NextN(from, uint(len(expected)))
+	if len(result) != len(expected) {
+		t.Errorf(`MustParse("0 0 * * 6#5").NextN("2013-09-02 08:44:30", 5):\n"`)
+		t.Errorf(`  Expected %d returned time values but got %d instead`, len(expected), len(result))
+	}
+	for i, next := range result {
+		nextStr := next.Format("Mon, 2 Jan 2006 15:04:15")
+		if nextStr != expected[i] {
+			t.Errorf(`MustParse("0 0 * * 6#5").NextN("2013-09-02 08:44:30", 5):\n"`)
 			t.Errorf(`  result[%d]: expected "%s" but got "%s"`, i, expected[i], nextStr)
 		}
 	}
