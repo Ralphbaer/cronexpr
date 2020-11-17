@@ -72,13 +72,13 @@ Other details
 
 Install
 -------
-    go get github.com/gorhill/cronexpr
+    go get github.com/Ralphbaer/cronexpr
 
 Usage
 -----
 Import the library:
 
-    import "github.com/gorhill/cronexpr"
+    import "github.com/Ralphbaer/cronexpr"
     import "time"
 
 Simplest way:
